@@ -13,6 +13,7 @@ export default function App() {
   const [output, setOutput] = useState<string[]>([]);
   const [isCorrect, setIsCorrect] = useState(false);
   const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const currentLesson = CURRICULUM[currentLessonIndex];
 
@@ -310,14 +311,25 @@ export default function App() {
             >
               <ChevronLeft size={24} />
             </button>
-            <button 
-              onClick={nextLesson}
-              disabled={currentLessonIndex === CURRICULUM.length - 1 || !isCorrect}
-              className="flex-1 p-5 rounded-2xl bg-white text-black font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-indigo-500 hover:text-white hover:shadow-[0_0_30px_rgba(99,102,241,0.3)] disabled:opacity-20 disabled:cursor-not-allowed transition-all"
-            >
-              Next Sprint
-              <ChevronRight size={24} />
-            </button>
+            {currentLessonIndex === CURRICULUM.length - 1 ? (
+              <button 
+                onClick={() => isCorrect && setShowCelebration(true)}
+                disabled={!isCorrect}
+                className="flex-1 p-5 rounded-2xl bg-indigo-500 text-white font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:shadow-[0_0_30px_rgba(99,102,241,0.3)] disabled:opacity-20 disabled:cursor-not-allowed transition-all"
+              >
+                Finish Course
+                <Trophy size={24} />
+              </button>
+            ) : (
+              <button 
+                onClick={nextLesson}
+                disabled={!isCorrect}
+                className="flex-1 p-5 rounded-2xl bg-white text-black font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-indigo-500 hover:text-white hover:shadow-[0_0_30px_rgba(99,102,241,0.3)] disabled:opacity-20 disabled:cursor-not-allowed transition-all"
+              >
+                Next Sprint
+                <ChevronRight size={24} />
+              </button>
+            )}
           </div>
         </div>
 
@@ -387,11 +399,16 @@ export default function App() {
                       </div>
                     </div>
                     <button 
-                      onClick={nextLesson}
-                      disabled={currentLessonIndex === CURRICULUM.length - 1}
-                      className="bg-white text-indigo-600 px-4 py-1.5 rounded-lg font-bold text-[9px] uppercase tracking-widest hover:bg-zinc-100 transition-colors disabled:opacity-50"
+                      onClick={() => {
+                        if (currentLessonIndex === CURRICULUM.length - 1) {
+                          setShowCelebration(true);
+                        } else {
+                          nextLesson();
+                        }
+                      }}
+                      className="bg-white text-indigo-600 px-4 py-1.5 rounded-lg font-bold text-[9px] uppercase tracking-widest hover:bg-zinc-100 transition-colors"
                     >
-                      Next Lesson
+                      {currentLessonIndex === CURRICULUM.length - 1 ? "Finish Course" : "Next Lesson"}
                     </button>
                   </motion.div>
                 )}
@@ -400,6 +417,47 @@ export default function App() {
           </div>
         </div>
       </main>
+
+      {/* Celebration Overlay */}
+      <AnimatePresence>
+        {showCelebration && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-zinc-950 flex items-center justify-center p-6 text-center"
+          >
+            <div className="max-w-xl space-y-8">
+              <motion.div
+                initial={{ scale: 0.5, rotate: -20 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: "spring", damping: 12 }}
+                className="w-32 h-32 bg-indigo-500 rounded-full flex items-center justify-center mx-auto shadow-[0_0_50px_rgba(99,102,241,0.5)]"
+              >
+                <Trophy size={64} className="text-white" />
+              </motion.div>
+              
+              <div className="space-y-4">
+                <h2 className="text-6xl font-black tracking-tighter text-white">COURSE MASTERED</h2>
+                <p className="text-xl text-zinc-400 font-medium">You've successfully completed all {CURRICULUM.length} sprints. You're now a Python shredder!</p>
+              </div>
+
+              <div className="pt-8">
+                <button 
+                  onClick={() => {
+                    setShowCelebration(false);
+                    setCurrentLessonIndex(0);
+                    setCompletedLessons(new Set());
+                  }}
+                  className="px-12 py-5 bg-white text-black font-black uppercase tracking-widest rounded-2xl hover:bg-indigo-500 hover:text-white transition-all shadow-xl"
+                >
+                  Restart Journey
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Footer */}
       <footer className="border-t border-zinc-800/50 bg-zinc-950/40 backdrop-blur-md mt-24 py-16">
