@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  body {
+    @apply antialiased bg-[#09090b] text-zinc-100;
+  }
+}
+
+.glass {
+  @apply bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50;
+}
+
+.glass-dark {
+  @apply bg-zinc-950/50 backdrop-blur-xl border border-zinc-800/20;
+}
+
+.prose pre {
+  @apply bg-zinc-950 text-zinc-100 p-4 rounded-xl border border-zinc-800;
+}
+
+.prose code {
+  @apply bg-indigo-500/10 px-1.5 py-0.5 rounded font-mono font-bold text-indigo-400;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-zinc-800 rounded-full hover:bg-zinc-700 transition-colors;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-zinc-800 rounded-full hover:bg-indigo-500/20;
+}
